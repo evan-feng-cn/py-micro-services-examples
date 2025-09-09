@@ -8,5 +8,6 @@ RUN pip install -r requirements.txt
 
 ENV APP_ENV=prod
 ENV LOG_PATH=your_log_path
+ENV PROCESS_PORT=8848
 
 CMD ["uvicorn", "app.web.server:create_app", "--factory", "--host", "0.0.0.0", "--port", "8848"]

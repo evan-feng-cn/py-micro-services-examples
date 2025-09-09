@@ -1,3 +1,4 @@
+import os
 from enum import Enum
 
 """
@@ -32,3 +33,13 @@ class WechatRobotEnum(Enum):
     @classmethod
     def get_by_key(cls, key: str) -> "WechatRobotEnum | None":
         return cls.__members__.get(key)
+
+"""
+test environment identification
+"""
+TEST_ENV = "test"
+
+"""
+app environment
+"""
+APP_ENV = os.getenv("APP_ENV", TEST_ENV)

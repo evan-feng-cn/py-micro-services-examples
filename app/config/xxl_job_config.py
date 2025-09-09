@@ -1,15 +1,14 @@
 import asyncio
-import os
-import socket
 from functools import wraps
 
 import pyxxl.xxl_client
 from pyxxl import ExecutorConfig, PyxxlRunner
 from pyxxl.ctx import g
 
-from app.common.logger import log
+from app.common.utils.ip_util import *
 from app.config.nacos_config import get_config
 from app.config.trace_.request_context import set_trace_id
+
 # from app.common.utils.wechat_msg_util import send_markdown_template_exception_message
 # from app.common.const import WechatRobotEnum
 
@@ -24,22 +23,6 @@ xxl_log_path = os.getenv("XXL_LOG_PATH", f"{BASE_DIR}/xxl_log")
 _executor = None
 
 """
-get the ip address of the local executor
-"""
-def _get_local_ip():
-    try:
-        # UDP, is not a real link, it only obtains a unique export IP address
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(('8.8.8.8', 80))
-        ip = s.getsockname()[0]
-        log.info(f"resolve local ip address:{ip}")
-        s.close()
-        return ip
-    except Exception as e:
-        log.exception(f"resolve local ip error:{str(e)}")
-        return '127.0.0.1'
-
-"""
 load global configuration
 """
 def _load_xxl_config() -> ExecutorConfig:
@@ -49,8 +32,8 @@ def _load_xxl_config() -> ExecutorConfig:
     executor_config = ExecutorConfig(
         xxl_admin_baseurl=xxl_config['url'],
         executor_app_name=xxl_config['app_name'],
-        executor_listen_host=_get_local_ip(),
-        executor_listen_port=xxl_config['port'],
+        executor_listen_host=get_local_ip(),
+        executor_listen_port=get_port(),
         access_token=xxl_config['access_token'],
         executor_log_path=xxl_executor_log_path,
         log_local_dir=xxl_log_path,

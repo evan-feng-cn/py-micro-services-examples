@@ -9,5 +9,6 @@ RUN pip install -r requirements.txt
 ENV APP_ENV=prod
 ENV LOG_PATH=your_log_path
 ENV PYTHONPATH=/your_root_path
+ENV PROCESS_PORT=8849
 
 CMD ["python", "-m", "app.xxl_job.scheduler_server"]

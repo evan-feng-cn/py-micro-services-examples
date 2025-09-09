@@ -1,10 +1,9 @@
-import os
 from threading import Lock
 
 import nacos
 import yaml
 
-from app.common.logger import log
+from app.common.utils.ip_util import *
 
 # base dir
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -35,11 +34,18 @@ class NacosConfigManager:
                     )
                     self.data_id = data_id
                     self.group = group
-                    self._initialized = True
+
                     # Pull the latest configuration during initialization
                     self.fetch_config()
+
+                    # registration service (if you need it)
+                    self.client.add_naming_instance(service_name=data_id, ip=get_local_ip(), port=get_port(), group_name=group,
+                                                    cluster_name="DEFAULT", ephemeral=True, weight=1.0,
+                                                    heartbeat_interval=10)
+
                     # monitor configuration change events
                     # self.client.add_config_watcher(self.data_id, self.group, self.refresh)
+                    self._initialized = True
 
     def fetch_config(self):
         try:
