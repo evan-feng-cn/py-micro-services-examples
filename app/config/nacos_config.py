@@ -4,6 +4,7 @@ import nacos
 import yaml
 
 from app.common.utils.ip_util import *
+from app.common.const import APP_ENV, TEST_ENV
 
 # base dir
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -49,13 +50,15 @@ class NacosConfigManager:
 
     def fetch_config(self):
         try:
-            content = self.client.get_config(self.data_id, self.group)
+            no_snapshot = TEST_ENV == APP_ENV
+            log.info(f"does NACOS close the local disaster recovery snapshot: {no_snapshot}")
+            content = self.client.get_config(self.data_id, self.group, no_snapshot=no_snapshot)
             if content is None:
-                log.warning(f"received nacos configuration content is empty，dataId={self.data_id}")
+                log.warning(f"received nacos configuration content is empty, dataId={self.data_id}")
                 return
             self._config_raw = content
             self._config_yaml = yaml.safe_load(content)
-            log.info(f"successfully loaded and parsed nacos configuration，dataId={self.data_id}")
+            log.info(f"successfully loaded and parsed nacos configuration, dataId={self.data_id}")
         except Exception as e:
             log.error(f"failed to retrieve or parse configuration: {e}")
 
@@ -77,7 +80,7 @@ class NacosConfigManager:
 """
 Get Nacos client information for a single instance"""
 def get_nacos_client() -> NacosConfigManager:
-    env = os.getenv("APP_ENV", "test")
+    env = APP_ENV
     config = _load_config(env)
     nacos_config = config['nacos']
     host = nacos_config.get('host')
