@@ -9,7 +9,7 @@
 - 配置中心: [Nacos](https://github.com/nacos-group/nacos-sdk-python)
 - 数据库: [MySQL / sqlalchemy](https://github.com/sqlalchemy/sqlalchemy)
 - Web框架: [FastAPI](https://github.com/fastapi/fastapi)
-- 日志（集成trace id链路追逐）: [loguru](https://github.com/Delgan/loguru)
+- 日志（集成trace id链路追踪）: [loguru](https://github.com/Delgan/loguru)
 - 三方通知组件: [企业微信](https://developer.work.weixin.qq.com/document/path/99110)
 
 # 项目结构
